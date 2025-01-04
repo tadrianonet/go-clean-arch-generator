@@ -1,4 +1,4 @@
- # {{.Name}}
+ # Generate Clean Architecture with Go
 
  This is a code generator project designed to create Go projects following Clean Architecture.
 
