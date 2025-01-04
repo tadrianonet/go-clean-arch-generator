@@ -33,7 +33,6 @@
 
  - **Clean Architecture**: Generates a project structure following Clean Architecture principles.
  - **Ready-to-use templates**: Includes templates for entities, use cases, repositories, and handlers.
- - **Swagger integration**: Automatically sets up Swagger for API documentation.
  - **Pre-configured `.gitignore`**: Ignores unnecessary files like binaries and IDE configurations.
  - **Example requests**: Provides a `requests.http` file for testing API endpoints.
 
