@@ -1,0 +1,11 @@
+### Criar um novo usuário
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "name": "Thiago S Adriano",
+  "email": "thiago.adriano@example.com"
+}
+
+### Buscar um usuário pelo ID
+GET http://localhost:8080/users/get?id=1

@@ -1,0 +1,30 @@
+package repositories
+
+import (
+    "errors"
+    "{{.Name}}/internal/entities"
+)
+
+type UserRepositoryImpl struct {
+    users map[int]*entities.User
+}
+
+func NewUserRepositoryImpl() *UserRepositoryImpl {
+    return &UserRepositoryImpl{
+        users: make(map[int]*entities.User),
+    }
+}
+
+func (r *UserRepositoryImpl) Save(user *entities.User) error {
+    user.ID = len(r.users) + 1
+    r.users[user.ID] = user
+    return nil
+}
+
+func (r *UserRepositoryImpl) FindByID(id int) (*entities.User, error) {
+    user, exists := r.users[id]
+    if !exists {
+        return nil, errors.New("user not found")
+    }
+    return user, nil
+}

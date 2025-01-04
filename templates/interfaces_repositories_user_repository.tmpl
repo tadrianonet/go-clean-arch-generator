@@ -1,0 +1,8 @@
+package repositories
+
+import "{{.Name}}/internal/entities"
+
+type UserRepository interface {
+    Save(user *entities.User) error
+    FindByID(id int) (*entities.User, error)
+}

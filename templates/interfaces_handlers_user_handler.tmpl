@@ -1,0 +1,50 @@
+package handlers
+
+import (
+    "encoding/json"
+    "net/http"
+    "strconv"
+    "{{.Name}}/internal/entities"
+    "{{.Name}}/internal/usecases"
+)
+
+type UserHandler struct {
+    UserUseCase *usecases.UserUseCase
+}
+
+func NewUserHandler(uc *usecases.UserUseCase) *UserHandler {
+    return &UserHandler{UserUseCase: uc}
+}
+
+func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
+    var user entities.User
+    if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    if err := h.UserUseCase.CreateUser(&user); err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusCreated)
+    json.NewEncoder(w).Encode(user)
+}
+
+func (h *UserHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
+    idStr := r.URL.Query().Get("id")
+    id, err := strconv.Atoi(idStr)
+    if err != nil {
+        http.Error(w, "invalid id", http.StatusBadRequest)
+        return
+    }
+
+    user, err := h.UserUseCase.GetUserByID(id)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusNotFound)
+        return
+    }
+
+    json.NewEncoder(w).Encode(user)
+}

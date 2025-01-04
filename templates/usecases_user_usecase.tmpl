@@ -1,0 +1,22 @@
+package usecases
+
+import (
+    "{{.Name}}/internal/entities"
+    "{{.Name}}/internal/interfaces/repositories"
+)
+
+type UserUseCase struct {
+    UserRepo repositories.UserRepository
+}
+
+func NewUserUseCase(repo repositories.UserRepository) *UserUseCase {
+    return &UserUseCase{UserRepo: repo}
+}
+
+func (uc *UserUseCase) CreateUser(user *entities.User) error {
+    return uc.UserRepo.Save(user)
+}
+
+func (uc *UserUseCase) GetUserByID(id int) (*entities.User, error) {
+    return uc.UserRepo.FindByID(id)
+}
