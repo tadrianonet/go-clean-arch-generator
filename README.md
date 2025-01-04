@@ -1,4 +1,4 @@
- # Generate Clean Architecture with Go
+ # Generate project with Clean Architecture in Go
 
  This is a code generator project designed to create Go projects following Clean Architecture.
 
@@ -35,6 +35,20 @@
  - **Ready-to-use templates**: Includes templates for entities, use cases, repositories, and handlers.
  - **Pre-configured `.gitignore`**: Ignores unnecessary files like binaries and IDE configurations.
  - **Example requests**: Provides a `requests.http` file for testing API endpoints.
+ - **Pre-commit hook**: Automatically sets up a pre-commit hook to ensure code quality.
+
+ ## Pre-Commit Hook
+
+ The generated project includes a pre-commit hook to ensure code quality before committing changes. It performs the following checks:
+
+ - **Code formatting**: Ensures the code is properly formatted using `gofmt`.
+ - **Linting**: Runs `golangci-lint` to catch common issues.
+ - **Tests**: Executes all tests in the project using `go test`.
+
+ To use the pre-commit hook, make sure `golangci-lint` is installed:
+ ```bash
+ go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+ ```
 
  ## Project Structure
 
