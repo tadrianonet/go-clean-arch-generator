@@ -1,0 +1,32 @@
+#!/bin/bash
+
+echo "Running pre-commit checks..."
+
+# Run gofmt to check code formatting
+echo "Checking code formatting with gofmt..."
+gofmt_output=$(gofmt -l .)
+if [ -n "$gofmt_output" ]; then
+    echo "Code formatting issues found:"
+    echo "$gofmt_output"
+    echo "Please run 'gofmt -w .' to fix formatting issues."
+    exit 1
+fi
+
+# Run golangci-lint for linting
+echo "Running golangci-lint..."
+golangci-lint run
+if [ $? -ne 0 ]; then
+    echo "Linting issues found. Please fix them before committing."
+    exit 1
+fi
+
+# Run tests
+echo "Running tests..."
+go test ./...
+if [ $? -ne 0 ]; then
+    echo "Tests failed. Please fix them before committing."
+    exit 1
+fi
+
+echo "Pre-commit checks passed successfully!"
+exit 0

@@ -39,6 +39,19 @@
  - **Interfaces**: External layer that handles input/output (HTTP handlers, database).
  - **Repositories**: Implements data persistence.
 
+ ## Pre-Commit Hook
+
+ This project includes a pre-commit hook to ensure code quality before committing changes. It performs the following checks:
+
+ - **Code formatting**: Ensures the code is properly formatted using `gofmt`.
+ - **Linting**: Runs `golangci-lint` to catch common issues.
+ - **Tests**: Executes all tests in the project using `go test`.
+
+ To use the pre-commit hook, make sure `golangci-lint` is installed:
+ ```bash
+ go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+ ```
+
  ## How to Contribute
 
  1. Fork the project.

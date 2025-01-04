@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"text/template"
 )
@@ -13,15 +14,23 @@ type Project struct {
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Uso: clean-arch-generator <nome-do-projeto>")
+		fmt.Println("Usage: clean-arch-generator <project-name>")
 		return
 	}
 
 	projectName := os.Args[1]
 	project := Project{Name: projectName}
 
+	// Create folder structure
 	createFolderStructure(projectName)
 
+	// Initialize Git repository
+	if err := initGitRepository(projectName); err != nil {
+		fmt.Printf("Error initializing Git repository: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Generate base files
 	generateFile(filepath.Join(projectName, "cmd", "main.go"), "cmd_main.tmpl", project)
 	generateFile(filepath.Join(projectName, "internal", "entities", "user.go"), "entities_user.tmpl", project)
 	generateFile(filepath.Join(projectName, "internal", "usecases", "user_usecase.go"), "usecases_user_usecase.tmpl", project)
@@ -33,7 +42,14 @@ func main() {
 	generateFile(filepath.Join(projectName, ".gitignore"), "gitignore.tmpl", project)
 	generateFile(filepath.Join(projectName, "README.md"), "readme_md.tmpl", project)
 
-	fmt.Printf("Projeto '%s' criado com sucesso!\n", projectName)
+	// Generate pre-commit hook
+	preCommitPath := filepath.Join(projectName, ".git", "hooks", "pre-commit")
+	generateFile(preCommitPath, "pre-commit.tmpl", project)
+
+	// Make the pre-commit hook executable
+	os.Chmod(preCommitPath, 0755)
+
+	fmt.Printf("Project '%s' created successfully!\n", projectName)
 }
 
 func createFolderStructure(projectName string) {
@@ -52,6 +68,14 @@ func createFolderStructure(projectName string) {
 			os.Exit(1)
 		}
 	}
+}
+
+func initGitRepository(projectName string) error {
+	cmd := exec.Command("git", "init", projectName)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to initialize Git repository: %v", err)
+	}
+	return nil
 }
 
 func generateFile(filePath, templateFile string, data Project) {
