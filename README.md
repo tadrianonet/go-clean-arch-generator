@@ -6,7 +6,7 @@
 
 The last release:
 
-* [Windows](./executables/clean-arch-generator.exe) 
+* [Windows](https://github.com/tadrianonet/go-clean-arch-generator/blob/main/executables/clean-arch-generator.exe) 
 * [Mac](./executables/clean-arch-generator) 
  
 
