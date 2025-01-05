@@ -2,6 +2,14 @@
 
  This is a code generator project designed to create Go projects following Clean Architecture.
 
+ ## Execubles
+
+The last release:
+
+* [Windows](./executables/clean-arch-generator.exe) 
+* [Mac](./executables/clean-arch-generator) 
+ 
+
  ## How to Use
 
  1. **Build the generator**:
