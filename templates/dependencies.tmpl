@@ -1,0 +1,30 @@
+package dependencies
+
+import (
+	"{{.Name}}/internal/interfaces/handlers"
+	interfaces "{{.Name}}/internal/interfaces/repositories"
+	impl "{{.Name}}/internal/repositories"
+	usecase "{{.Name}}/internal/usecases"
+    "log"
+	"go.uber.org/dig"
+)
+
+func Setup() *dig.Container {
+    container := dig.New()
+
+	if err := container.Provide(func() interfaces.UserRepository {
+		return impl.NewUserRepositoryImpl()
+	}); err != nil {
+		log.Fatalf("Erro ao registrar UserRepository: %v", err)
+	}
+
+	if err := container.Provide(usecase.NewUserUseCase); err != nil {
+		log.Fatalf("Erro ao registrar UserUseCase: %v", err)
+	}
+
+	if err := container.Provide(handlers.NewUserHandler); err != nil {
+		log.Fatalf("Erro ao registrar UserHandler: %v", err)
+	}
+
+	return container
+}

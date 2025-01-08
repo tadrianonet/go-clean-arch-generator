@@ -31,6 +31,7 @@ func main() {
 	}
 
 	// Generate base files
+
 	generateFile(filepath.Join(projectName, "cmd", "main.go"), "cmd_main.tmpl", project)
 	generateFile(filepath.Join(projectName, "internal", "entities", "user.go"), "entities_user.tmpl", project)
 	generateFile(filepath.Join(projectName, "internal", "usecases", "user_usecase.go"), "usecases_user_usecase.tmpl", project)
@@ -41,6 +42,9 @@ func main() {
 	generateFile(filepath.Join(projectName, "requests.http"), "requests_http.tmpl", project)
 	generateFile(filepath.Join(projectName, ".gitignore"), "gitignore.tmpl", project)
 	generateFile(filepath.Join(projectName, "README.md"), "readme_md.tmpl", project)
+
+	generateFile(filepath.Join(projectName, "internal", "delivery", "web.app.go"), "web.app.tmpl", project)
+	generateFile(filepath.Join(projectName, "internal", "delivery", "dependencies", "dependencies.go"), "dependencies.tmpl", project)
 
 	// Generate pre-commit hook
 	preCommitPath := filepath.Join(projectName, ".git", "hooks", "pre-commit")
@@ -60,6 +64,7 @@ func createFolderStructure(projectName string) {
 		filepath.Join(projectName, "internal", "interfaces", "repositories"),
 		filepath.Join(projectName, "internal", "interfaces", "handlers"),
 		filepath.Join(projectName, "internal", "repositories"),
+		filepath.Join(projectName, "internal", "delivery", "dependencies"),
 	}
 
 	for _, folder := range folders {

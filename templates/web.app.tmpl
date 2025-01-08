@@ -1,0 +1,24 @@
+package webapp
+
+import (
+	"{{.Name}}/internal/delivery/dependencies"
+	"{{.Name}}/internal/interfaces/handlers"
+	"log"
+	"net/http"
+)
+
+func Start() {
+	container := dependencies.Setup()
+
+	err := container.Invoke(func(userHandler *handlers.UserHandler) {
+		http.HandleFunc("/users", userHandler.CreateUser)
+		http.HandleFunc("/users/get", userHandler.GetUserByID)
+	})
+
+	if err != nil {
+		log.Fatalf("Erro ao resolver dependências: %v", err)
+	}   
+
+	log.Println("Server started at :8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}

@@ -1,21 +1,9 @@
 package main
 
 import (
-    "log"
-    "net/http"
-    "{{.Name}}/internal/interfaces/handlers"
-    "{{.Name}}/internal/repositories"
-    "{{.Name}}/internal/usecases"
+    "{{.Name}}/internal/delivery"
 )
 
 func main() {
-    userRepo := repositories.NewUserRepositoryImpl()
-    userUseCase := usecases.NewUserUseCase(userRepo)
-    userHandler := handlers.NewUserHandler(userUseCase)
-
-    http.HandleFunc("/users", userHandler.CreateUser)
-    http.HandleFunc("/users/get", userHandler.GetUserByID)
-
-    log.Println("Server started at :8080")
-    log.Fatal(http.ListenAndServe(":8080", nil))
+  webapp.Start()
 }
