@@ -44,6 +44,7 @@ The last release:
  - **Pre-configured `.gitignore`**: Ignores unnecessary files like binaries and IDE configurations.
  - **Example requests**: Provides a `requests.http` file for testing API endpoints.
  - **Pre-commit hook**: Automatically sets up a pre-commit hook to ensure code quality.
+ - **Dependency Injection** Configured with package Dig developed from Uber
 
  ## Pre-Commit Hook
 
