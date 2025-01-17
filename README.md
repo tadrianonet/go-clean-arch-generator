@@ -1,7 +1,11 @@
 # Generate Go Project with Clean Architecture
 
 
- This is a code generator project designed to create Go projects following Clean Architecture.
+This is a Go code generator designed to create projects following the principles of Clean Architecture. The generator provides a well-structured project setup with predefined templates for entities, use cases, repositories, and handlers, making it easy to get started with Clean Architecture in Go.
+
+With a simple command, you can generate a new Go project that adheres to best practices and includes essential components like OpenTelemetry configuration, pre-commit hooks for code quality checks, and example requests for testing API endpoints.
+
+Ideal for developers who want to quickly start a project with Clean Architecture without worrying about boilerplate setup.
 
  ## Execubles
 
