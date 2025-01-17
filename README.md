@@ -44,6 +44,7 @@ The last release:
  - **Pre-configured `.gitignore`**: Ignores unnecessary files like binaries and IDE configurations.
  - **Example requests**: Provides a `requests.http` file for testing API endpoints.
  - **Pre-commit hook**: Automatically sets up a pre-commit hook to ensure code quality.
+ - **OpenTelemetry**: Cofigured with Opentelemetry
 
  ## Pre-Commit Hook
 
@@ -58,6 +59,105 @@ The last release:
  go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
  ```
 
+  ## OpenTelemetry
+
+  To test Opentelemetry with `zipkin` localhost you can follow this steps:
+
+* Create a container:
+
+ ```bash
+docker run -d --name zipkin -p 9411:9411 openzipkin/zipkin 
+ ```
+
+ * Install packages
+
+ ```bash
+go get  go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp
+go get 	go.opentelemetry.io/otel/sdk/resource
+go get  go.opentelemetry.io/otel/semconv/v1.4.0
+go get  go.opentelemetry.io/otel/exporters/zipkin
+
+```
+
+ * Update webwebapp with this code:
+
+```bash
+
+	func Start() {
+	container := dependencies.Setup()
+
+	// Cria um router para usar com o middleware otelhttp
+	mux := http.NewServeMux()
+
+	err := container.Invoke(func(userHandler *handlers.UserHandler) {
+		mux.HandleFunc("/users", userHandler.CreateUser)
+		mux.HandleFunc("/users/get", userHandler.GetUserByID)
+	})
+
+	if err != nil {
+		log.Fatalf("Erro ao resolver dependências: %v", err)
+	}
+
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer stop()
+
+	// Set up OpenTelemetry.
+	otelShutdown, err := infra.SetupOTelSDK(ctx)
+	if err != nil {
+		return
+	}
+	// Handle shutdown properly so nothing leaks.
+	defer func() {
+		err = errors.Join(err, otelShutdown(context.Background()))
+	}()
+
+	handler := otelhttp.NewHandler(mux, "http-server")
+
+	log.Println("Server started at :8080")
+	log.Fatal(http.ListenAndServe(":8080", handler))
+}
+```
+
+* Update otel.go -> newTraceProvider with this code:
+
+```bash
+
+    func newTraceProvider(ctx context.Context) (*trace.TracerProvider, error) {
+	zipkinEndpoint := "http://localhost:9411/api/v2/spans" // Substitua se usar um endpoint diferente
+
+	zipkinExporter, err := zipkin.New(zipkinEndpoint)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := resource.New(ctx,
+		resource.WithAttributes(
+			semconv.ServiceNameKey.String("bal"), // Nome do serviço
+		),
+		resource.WithFromEnv(), // Adiciona atributos de ambiente, se disponíveis
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	traceProvider := trace.NewTracerProvider(
+		trace.WithBatcher(zipkinExporter,
+			trace.WithBatchTimeout(time.Second)), // Ajuste o tempo limite conforme necessário
+		trace.WithResource(res),
+	)
+
+	return traceProvider, nil
+}
+
+```
+* Update SetupOTelSDK with this code:
+
+```bash
+tracerProvider, err := newTraceProvider(ctx)
+```
+
+
+
  ## Project Structure
 
  The generated project includes the following folders and files:
@@ -65,9 +165,10 @@ The last release:
  - **`cmd/`**: Contains the `main.go` file to run the application.
  - **`internal/`**: Contains the core application logic, divided into:
    - **`entities/`**: Business entities and models.
+   - **`infra/`**: Infraestructure like otel or database.
    - **`usecases/`**: Business logic and use cases.
    - **`interfaces/`**: Handlers and repositories interfaces.
-   - **`repositories/`**: Implementation of data persistence.
+   - **`repositories/`**: Implementation of data persistence.   
  - **`requests.http`**: Example HTTP requests for testing the API.
  - **`.gitignore`**: Pre-configured to ignore unnecessary files.
  - **`README.md`**: Project documentation (this file).

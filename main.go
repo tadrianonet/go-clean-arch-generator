@@ -46,6 +46,8 @@ func main() {
 	generateFile(filepath.Join(projectName, "internal", "delivery", "web.app.go"), "web.app.tmpl", project)
 	generateFile(filepath.Join(projectName, "internal", "delivery", "dependencies", "dependencies.go"), "dependencies.tmpl", project)
 
+	generateFile(filepath.Join(projectName, "internal", "infra", "otel.go"), "otel.tmpl", project)
+
 	// Generate pre-commit hook
 	preCommitPath := filepath.Join(projectName, ".git", "hooks", "pre-commit")
 	generateFile(preCommitPath, "pre-commit.tmpl", project)
@@ -65,6 +67,7 @@ func createFolderStructure(projectName string) {
 		filepath.Join(projectName, "internal", "interfaces", "handlers"),
 		filepath.Join(projectName, "internal", "repositories"),
 		filepath.Join(projectName, "internal", "delivery", "dependencies"),
+		filepath.Join(projectName, "internal", "infra"),
 	}
 
 	for _, folder := range folders {
