@@ -1,4 +1,5 @@
- # Generate project with Clean Architecture in Go
+# Generate Go Project with Clean Architecture
+
 
  This is a code generator project designed to create Go projects following Clean Architecture.
 
